@@ -1,0 +1,20 @@
+var Accordion = class extends HTMLElement {
+  constructor() {
+    super();
+    this.accordionHeader = this.querySelector(".footer__block__title");
+  }
+
+  connectedCallback() {
+    this.accordionHeader.addEventListener("click", () => {
+      this.toggleAccordion();
+    });
+  }
+
+  toggleAccordion() {
+    this.classList.toggle("open");
+  }
+};
+
+if (!window.customElements.get("footer-accordion")) {
+  window.customElements.define("footer-accordion", Accordion);
+}
