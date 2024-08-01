@@ -1,0 +1,41 @@
+(function(){
+    d=document;
+    if(!window.baback){
+      window.baback = {providerId: 84901822758}
+    }else{
+      window.baback.providerId = 84901822758
+    }
+    console.log("[baback] loading 84901822758");
+    
+    const load = ({orderId,shopNow}) => {
+      s=d.createElement("script");
+        s.src="https://cdn1.baback.co/index.js";
+        s.type="module";
+        s.async=1;
+        d.getElementsByTagName("head")[0].appendChild(s);
+        s.onload = () => {
+          setTimeout(() => {
+            if (window.baback && !shopNow) {
+              window.baback.open({orderId});
+            }
+          },50)
+        }
+    }
+
+
+    d.addEventListener("click", (e) => {
+      const target = e.target;
+      if (target.closest('#baback-trigger') || target.closest('a[href*="/a/return"]')) {
+        const urlParams = new URLSearchParams(target.href); 
+        const orderId = urlParams.get('orderId') || urlParams.get('order-id');
+        e.preventDefault(); // Empêche la navigation vers l'URL du lien
+        load({orderId})
+      }
+    });
+    
+    const isShopNow = JSON.parse(localStorage.getItem('baback'))?.state?.step === "shop-now";
+    if (isShopNow) {
+      load({shopNow: true});
+    }
+    window.baback.open = (orderId)=>load({shopNow:false, orderId:orderId});
+  })()

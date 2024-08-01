@@ -1,0 +1,72 @@
+
+    (function() {
+      var baseURL = "https://cdn.shopify.com/shopifycloud/checkout-web/assets/";
+      var scripts = ["https://cdn.shopify.com/shopifycloud/checkout-web/assets/runtime.latest.fr.454ac354e00bf9c230b8.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/5161.latest.fr.eb1701a9f62f6ac84361.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/5319.latest.fr.8998a54325021c3bb151.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/4085.latest.fr.a8f22945d147a9d744ab.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/app.latest.fr.6b7e9b2b710a4ae60410.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/2542.latest.fr.e8b98a9ed829efc0c730.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/1354.latest.fr.df85ff6239f49f59ff8b.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/2080.latest.fr.5117e670600bcaf49bb5.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/5767.latest.fr.0baf8be3b42cd2adbb95.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/9649.latest.fr.f42bc3fc5b2c37dd134d.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/5718.latest.fr.608a2bf0229a377a135c.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/2714.latest.fr.04944aa4375f2a95cd73.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/668.latest.fr.04631e1959890de7e3b9.js","https://cdn.shopify.com/shopifycloud/checkout-web/assets/OnePage.latest.fr.affb914cf995921c339a.js"];
+      var styles = ["https://cdn.shopify.com/shopifycloud/checkout-web/assets/5161.latest.fr.39e037bce4997f545a3a.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/app.latest.fr.5da3f52c706a09a6da39.css","https://cdn.shopify.com/shopifycloud/checkout-web/assets/6268.latest.fr.24776bc55f29002e680f.css"];
+      var fontPreconnectUrls = ["https://fonts.shopifycdn.com"];
+      var fontPrefetchUrls = ["https://fonts.shopifycdn.com/muli/muli_n4.32796dd29ef52f78859bd8685b2d63db23ffd695.woff2?h1=bG9sbGlwb3BzLmZy&hmac=1f6d6f70c3d986595e086fc51299c6d8501b22aed558f9e176543e69362e3286","https://fonts.shopifycdn.com/muli/muli_n7.5088b0a619cd5498c63f83358f68a9bd968d602f.woff2?h1=bG9sbGlwb3BzLmZy&hmac=913c7ab9f76a90a57090f319cc245e6363ce5c4b9b449b7da483c9a506fddad4"];
+      var imgPrefetchUrls = ["https://cdn.shopify.com/s/files/1/0849/0182/2758/files/lollipops-logo_png_x320.webp?v=1708011286"];
+
+      function preconnect(url, callback) {
+        var link = document.createElement('link');
+        link.rel = 'dns-prefetch preconnect';
+        link.href = url;
+        link.crossOrigin = '';
+        link.onload = link.onerror = callback;
+        document.head.appendChild(link);
+      }
+
+      function preconnectAssets() {
+        var resources = [baseURL].concat(fontPreconnectUrls);
+        var index = 0;
+        (function next() {
+          var res = resources[index++];
+          if (res) preconnect(res, next);
+        })();
+      }
+
+      function prefetch(url, as, callback) {
+        var link = document.createElement('link');
+        if (link.relList.supports('prefetch')) {
+          link.rel = 'prefetch';
+          link.fetchPriority = 'low';
+          link.as = as;
+          if (as === 'font') link.type = 'font/woff2';
+          link.href = url;
+          link.crossOrigin = '';
+          link.onload = link.onerror = callback;
+          document.head.appendChild(link);
+        } else {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url, true);
+          xhr.onloadend = callback;
+          xhr.send();
+        }
+      }
+
+      function prefetchAssets() {
+        var resources = [].concat(
+          scripts.map(function(url) { return [url, 'script']; }),
+          styles.map(function(url) { return [url, 'style']; }),
+          fontPrefetchUrls.map(function(url) { return [url, 'font']; }),
+          imgPrefetchUrls.map(function(url) { return [url, 'image']; })
+        );
+        var index = 0;
+        (function next() {
+          var res = resources[index++];
+          if (res) prefetch(res[0], res[1], next);
+        })();
+      }
+
+      function onLoaded() {
+        preconnectAssets();
+        prefetchAssets();
+      }
+
+      if (document.readyState === 'complete') {
+        onLoaded();
+      } else {
+        addEventListener('load', onLoaded);
+      }
+    })();
+  
